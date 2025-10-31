@@ -32,10 +32,11 @@ export default function PostDetailPage() {
 
     const fetchPost = async () => {
       try {
-        const res = await apiRequest<{ data: Post }>(`/posts/${params.id}`, {
+       const res = await apiRequest<Post>(`/posts/${params.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setPost(res.data.data);
+        console.log('Fetched post:', res);
+        setPost(res.data);
       } catch (err: any) {
         console.error(err);
         setError(err.message || 'Failed to load post.');

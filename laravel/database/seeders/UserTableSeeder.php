@@ -19,6 +19,6 @@ class UserTableSeeder extends Seeder
             'password' => bcrypt('password'),
         ];
 
-        User::firstOrCreate($data);
+        User::firstOrCreate(['email' => $data['email']], $data);
     }
 }

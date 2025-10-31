@@ -65,7 +65,7 @@ export default function HomePage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Blog Posts</h1>
         {authenticated && (
-          <Link href="/post/new" className="btn btn-primary">
+          <Link href="/posts/new" className="btn btn-primary">
             Create New Post
           </Link>
         )}

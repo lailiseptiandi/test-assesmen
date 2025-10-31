@@ -1,0 +1,77 @@
+services:
+  # === MySQL Database ===
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: blog
+      MYSQL_USER: bloguser
+      MYSQL_PASSWORD: blogpass
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3305:3306"
+    networks:
+      - app-network
+
+  # === Laravel Backend ===
+  laravel:
+    build:
+      context: ./laravel
+      dockerfile: Dockerfile
+    container_name: laravel
+    restart: unless-stopped
+    volumes:
+      - ./laravel:/var/www
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      APP_URL: http://localhost:8000
+      DB_HOST: mysql
+      DB_DATABASE: blog
+      DB_USERNAME: bloguser
+      DB_PASSWORD: blogpass
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  # === Nginx (for Laravel) ===
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./laravel:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - laravel
+    networks:
+      - app-network
+
+  # === Next.js Frontend ===
+  nextjs:
+    build:
+      context: ./nextjs
+      dockerfile: Dockerfile
+    container_name: nextjs
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    depends_on:
+      - nginx
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge

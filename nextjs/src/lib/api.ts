@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
 
 export interface ApiResponse<T = any> {
   meta: {
@@ -92,6 +93,10 @@ export interface Post {
   created_at?: string;
   updated_at?: string;
   thumbnail?: string;
+  user?: {
+    id: number;
+    name: string;
+  };
 }
 
 // === Post API ===
